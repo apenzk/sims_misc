@@ -15,12 +15,13 @@ def calculate_win_chance(N, num_black,pos_white):
     Returns:
     - Win chance.
     """
+    if pos_white<=num_black:
+        return 1
+
     value = 1.
     # print(f"num_black = {num_black}, pos_white = {pos_white}")
     for j in range(1, num_black+1):
         # print(f"j = {j} : {float(pos_white - j) / float(N - j)}")
-        if pos_white-j==0:
-            return 1
         value *= float(pos_white - j) / float(N - j)    
     return 1-value
 
@@ -50,9 +51,9 @@ def plot_win_chance_vs_k(N):
 
     plt.clf()
     plt.plot(num_black_array, win_chances, marker='')
-    plt.xlabel('Number of Adversary Balls (k)')
+    plt.xlabel('Number of black Balls (k)')
     plt.ylabel('Average Win Chance')
-    plt.title('Win Chance vs Number of Adversary Balls, N={}'.format(N))
+    plt.title('Win Chance vs Number of black Balls, N={}'.format(N))
     plt.xlim(0, min(100, max(num_black_array)))
     plt.grid(True)
     # make a string for the filename containing the number of balls
@@ -60,7 +61,7 @@ def plot_win_chance_vs_k(N):
 
 def plot_win_chance_vs_k_fixed_m(N):
     """
-    Plot the win chance against the number of adversary balls (k). We have several m.
+    Plot the win chance against the number of black balls (k). We have several m.
     
     Parameters:
     - N: Total number of balls.
@@ -74,7 +75,7 @@ def plot_win_chance_vs_k_fixed_m(N):
     for m in pos_white_array:
         win_chances = [calculate_win_chance(N, k, m) for k in num_black_array]
         plt.plot(num_black_array, win_chances, marker='', label=m)
-    plt.xlabel('Number of Adversary Balls (k)')
+    plt.xlabel('Number of black Balls (k)')
     plt.ylabel('Average Win Chance')
     plt.title('Win Chance vs Number of black Balls, N={}'.format(N))
     plt.xlim(0, min(100, max(num_black_array)))
