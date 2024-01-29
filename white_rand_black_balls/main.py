@@ -49,15 +49,70 @@ def plot_win_chance_vs_k(N):
     # print(f"num_black_array = {num_black_array}")
     win_chances = [average_win_chance(N, k) for k in num_black_array]
 
+    # -------------------- probability --------------------
+
     plt.clf()
+    plt.plot(3,win_chances[2], marker='o', color='red',label='M=10, p='+str(win_chances[2]))
+    plt.plot(10,win_chances[9], marker='o', color='red',label='M=100, p='+str(win_chances[9]))
+    plt.plot(30,win_chances[29], marker='o', color='red',label='M=1000, p='+str(win_chances[29]))
+    plt.legend()
     plt.plot(num_black_array, win_chances, marker='')
     plt.xlabel('Number of black Balls (k)')
     plt.ylabel('Average Win Chance')
     plt.title('Win Chance vs Number of black Balls, N={}'.format(N))
-    plt.xlim(0, min(100, max(num_black_array)))
+    plt.xlim(1, min(100, max(num_black_array)))
+    plt.ylim(0.5, 1)
     plt.grid(True)
-    # make a string for the filename containing the number of balls
     plt.savefig('plot_average__N={}.png'.format(N))
+
+    # -------------------- p_loss/p_win --------------------
+
+    plt.clf()
+    loss_chances = [1.0 - x for x in win_chances]
+    result = np.copy(win_chances)
+    for i in range(len(result)):
+        result[i] = loss_chances[i] / win_chances[i] * num_black_array[i]    
+    plt.plot(num_black_array, result, marker='')
+    plt.xlabel('Number of black Balls (k)')
+    plt.ylabel('p_loss / p_win * k')
+    plt.title('N={}'.format(N))
+    plt.xlim(1, min(100, max(num_black_array)))
+    plt.ylim(0, 2)
+    plt.grid(True)
+    plt.savefig('plot_p_loss_p_win_k__N={}.png'.format(N))
+
+    # -------------------- Relative return --------------------
+
+    plt.clf()
+    result = np.copy(win_chances)
+    for i in range(len(result)):
+        result[i] = win_chances[i] / num_black_array[i]
+    plt.plot(num_black_array, result, marker='')
+    plt.xlabel('Number of black Balls (k)')
+    plt.ylabel('p_win / k')
+    plt.title('N={}'.format(N))
+    plt.xlim(1, min(100, max(num_black_array)))
+    plt.grid(True)
+    plt.savefig('plot_p_win_k__N={}.png'.format(N))
+
+    # -------------------- Differentiate p_win --------------------
+
+    plt.clf()
+    result = np.copy(win_chances)
+    for i in range(1,len(result)):
+        result[i] = win_chances[i] - win_chances[i-1]
+    plt.plot(num_black_array, result, marker='')
+    plt.xlabel('Number of black Balls (k)')
+    plt.ylabel('d p_win / dk')
+    plt.title('N={}'.format(N))
+    plt.xlim(1, min(100, max(num_black_array)))
+    plt.yscale('log')
+    plt.grid(True)
+    plt.savefig('plot_d_p_win_dk__N={}__log.png'.format(N))
+    plt.xscale('log')
+    plt.savefig('plot_d_p_win_dk__N={}__log_log.png'.format(N))
+
+
 
 def plot_win_chance_vs_k_fixed_m(N):
     """
@@ -86,9 +141,6 @@ def plot_win_chance_vs_k_fixed_m(N):
     
 
 if __name__ == "__main__":
-    N = 100
-    plot_win_chance_vs_k(N)
-    plot_win_chance_vs_k_fixed_m(N)
     N = 1000
     plot_win_chance_vs_k(N)
     plot_win_chance_vs_k_fixed_m(N)
